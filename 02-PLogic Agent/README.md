@@ -8,8 +8,7 @@ The overall goal is to find the gold on the tile map using a logic based agent. 
 
 The challenge is now to implement the agent by yourself! To do so simply create your own agent and implement the agent class. In every call cycle you must return on of the possible actions: DEFAULT, UP, DOWN, RIGHT, LEFT.
 
-```
-#!java
+```java
 public class LogicAgent extends Agent{
 
 	@Override
@@ -23,8 +22,7 @@ public class LogicAgent extends Agent{
 This method is invoked in every sampling update by the sensor. The Agent class provides you with the sensor object, 
 which is used for the current available tile information. Use the methods isBreezeOn() and isStenchOn(). You can simply build your own tile worlds for testing by using the builder class of the world:
 
-```
-#!java 
+```java 
     Agent a = new LogicAgent(3,0);
     WWorld w = new WWorld.Builder().
 		setEqualDimension(6).
@@ -39,8 +37,7 @@ which is used for the current available tile information. Use the methods isBree
 
 There is also a sample implementation of the agent called AgentKB. This solves the problem using propositional logic. With the environmental information provided by the sensor input, it builds up a knowledge base about the tile map. This knowledge is used to deduce new information. In each decision cycle the agent can therefore derive if a specific action like going up is save, meaning we can deduce that on the tile above there is no wumpus and also no pit. To solve this SAT problem we use a sat solver, which can be easily queried for the desired knowledge.
 
-```
-#!java
+```java
 public class AgentKB extends Agent{
 
 	private List<Action> actions;
@@ -67,8 +64,7 @@ public class AgentKB extends Agent{
 ```
 We use the ISolver and IProblem interfaces and get a default solver, which is sufficient for our logical problem. To add propositional clauses in disjunctive normal form (provided in DIMACS format), we must first create specific identifier for each tile on the map. Therefore we map the current tile position with two simple methods for the breeze and stench to a single integer.
 
-```
-#!java
+```java
 public int tileToIntMapperB(int x, int y) {
 		return (x >= 0 && y >= 0 && x < s.getWorldWidth() && y < s.getWorldHeight()) 
 				? ((y * s.getWorldWidth()) + x + 1) : -1;
@@ -96,8 +92,7 @@ After we have IDs for each tile, we can add the clauses to our knowledebase (sol
 For example for case one we would do the following:
 
 
-```
-#!java
+```java
     final int upCoor = tileToIntMapperB(x, y + 1);
     final int rightCoor = tileToIntMapperB(x + 1, y);
     solver.addClause(new VecInt(new int[]{upCoor, rightCoor}));
@@ -107,8 +102,7 @@ If all clauses have been added to the knowledge base in the current action cycle
 
 
 
-```
-#!java
+```java
 private Action decideNextAction() {
 	actions.clear();
 	problem = solver;
